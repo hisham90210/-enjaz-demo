@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>إنجاز | Enjaz</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Palette inspired by the UAE federal Design System (DLS 2.0 — core "strength"
+   palette: gold/black/red/green with neutral "Shades of White/Slate" backgrounds)
+   deliberately shifted off the exact reserved core-palette hex values, since
+   this product is an independent clearing office, not a federal entity — see
+   the master brief's own trust principle (§67, §79) against implying government
+   affiliation. Structure and mood (gold+ink+semantic red/green, flat, high
+   contrast) is what we borrow; the literal government swatch is not reused. */
+:root{
+  --emerald:#8A6B2C; --emerald-dark:#6C5324; --emerald-tint:#F2EDDE;
+  --navy:#1F2123; --navy-tint:#F1F1F2;
+  --bg:#F7F7F7; --surface:#FFFFFF; --text:#1F2123; --muted:#6B6F76; --border:#E3E4E6;
+  --success:#2F663C; --success-bg:#E4F4E7;
+  --warning:#8A5A0B; --warning-bg:#FBF0DC;
+  --error:#B52520; --error-bg:#FBE4E3;
+  --info:#0073AB; --info-bg:#DEF3FF;
+  --radius:14px; --radius-sm:9px;
+  --shadow:0 4px 16px rgba(31,33,35,0.07);
+  --font-ar:'Noto Kufi Arabic',sans-serif; --font-en:'Inter',sans-serif;
+  --focus:0 0 0 3px rgba(138,107,44,.35);
+}
+:root:not([data-theme="light"]){
+  @media (prefers-color-scheme: dark){
+    --bg:#141414; --surface:#1C1C1D; --text:#F2F1ED; --muted:#A3A3A0;
+    --border:#333332; --navy-tint:#232324; --emerald-tint:#2A2418;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141414; --surface:#1C1C1D; --text:#F2F1ED; --muted:#A3A3A0;
+  --border:#333332; --navy-tint:#232324; --emerald-tint:#2A2418;
+}
+*{box-sizing:border-box;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font-ar);}
+body.lang-en{font-family:var(--font-en);}
+button{font-family:inherit;cursor:pointer;}
+button:focus-visible, [tabindex]:focus-visible, a:focus-visible{outline:none;box-shadow:var(--focus);border-radius:8px;}
+.icon{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:0 0 auto;display:block;}
+.icon-sm{width:16px;height:16px;}
+.icon-lg{width:24px;height:24px;}
+
+.app-shell{max-width:1180px;margin:0 auto;padding:20px 16px 60px;}
+.top-tabs{display:flex;gap:8px;justify-content:center;margin-bottom:22px;flex-wrap:wrap;}
+.top-tabs button{padding:10px 18px;border-radius:999px;border:1px solid var(--border);background:var(--surface);color:var(--text);font-weight:600;font-size:14px;min-height:40px;}
+.top-tabs button.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.lang-switch{position:fixed;top:16px;inset-inline-end:16px;display:flex;gap:6px;z-index:50;background:var(--surface);padding:5px;border-radius:999px;border:1px solid var(--border);box-shadow:var(--shadow);}
+.lang-switch button{padding:6px 12px;border-radius:999px;border:none;background:transparent;font-size:13px;font-weight:600;color:var(--muted);min-height:32px;}
+.lang-switch button.active{background:var(--emerald);color:#fff;}
+
+.phone-wrap{display:flex;justify-content:center;padding:6px 0;}
+.phone{width:375px;max-width:100%;background:var(--surface);border-radius:46px;border:7px solid #0A0A0B;box-shadow:0 20px 50px rgba(0,0,0,.22), inset 0 0 0 2px #2b2b2c;overflow:hidden;min-height:790px;display:flex;flex-direction:column;position:relative;}
+.phone::before{content:"";position:absolute;top:88px;inset-inline-start:-9px;width:3px;height:60px;background:#0A0A0B;border-radius:2px;}
+.phone::after{content:"";position:absolute;top:140px;inset-inline-end:-9px;width:3px;height:90px;background:#0A0A0B;border-radius:2px;}
+.dynamic-island{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:96px;height:26px;background:#000;border-radius:16px;z-index:20;}
+.screen{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+.screen-body{padding:16px 16px 8px;flex:1;}
+.screen::-webkit-scrollbar{display:none;}
+.home-indicator{height:20px;display:flex;align-items:center;justify-content:center;background:var(--surface);}
+.home-indicator .bar{width:120px;height:4px;border-radius:99px;background:var(--navy);opacity:.55;}
+
+.header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.greeting{font-size:13px;color:var(--muted);}
+.greeting b{color:var(--text);font-size:16px;display:flex;align-items:center;gap:6px;}
+.avatar-row{display:flex;gap:8px;align-items:center;}
+.icon-btn{width:40px;height:40px;border-radius:12px;background:var(--emerald-tint);color:var(--emerald-dark);display:flex;align-items:center;justify-content:center;border:none;position:relative;}
+.dot{position:absolute;top:7px;inset-inline-end:7px;width:7px;height:7px;border-radius:50%;background:var(--error);border:1.5px solid var(--surface);}
+
+.search-box{background:var(--navy-tint);border-radius:var(--radius-sm);padding:12px 14px;font-size:14px;color:var(--muted);margin-bottom:18px;display:flex;align-items:center;gap:9px;min-height:44px;}
+.search-box input{border:none;background:transparent;outline:none;font-family:inherit;font-size:13.5px;color:var(--text);width:100%;}
+.search-box input::placeholder{color:var(--muted);}
+
+.quick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px;}
+.quick-item{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 6px;text-align:center;font-size:11px;color:var(--text);min-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;}
+.quick-item .qi-ic{width:34px;height:34px;border-radius:10px;background:var(--emerald-tint);color:var(--emerald-dark);display:flex;align-items:center;justify-content:center;}
+
+.section-title{font-size:15px;font-weight:700;margin:4px 0 12px;display:flex;justify-content:space-between;align-items:center;}
+.section-title .link{font-size:12px;color:var(--emerald);font-weight:600;display:inline-flex;align-items:center;gap:3px;}
+
+.status-scroll{display:flex;gap:10px;overflow-x:auto;margin-bottom:22px;padding-bottom:4px;}
+.status-chip{flex:0 0 auto;min-width:120px;border-radius:14px;padding:14px;color:#fff;display:flex;flex-direction:column;gap:8px;}
+.status-chip .top{display:flex;justify-content:space-between;align-items:center;}
+.status-chip .num{font-size:22px;font-weight:800;}
+.status-chip .lbl{font-size:11px;opacity:.92;}
+.c1{background:linear-gradient(135deg,var(--emerald),var(--emerald-dark));}
+.c2{background:linear-gradient(135deg,#C99A1E,#8f6a0c);}
+.c3{background:linear-gradient(135deg,var(--navy),#061224);}
+.c4{background:linear-gradient(135deg,#1F9D55,#146638);}
+
+.chip-row{display:flex;gap:8px;overflow-x:auto;margin-bottom:16px;padding-bottom:2px;}
+.filter-chip{flex:0 0 auto;padding:8px 15px;border-radius:999px;border:1px solid var(--border);background:var(--surface);font-size:12.5px;font-weight:600;color:var(--muted);min-height:36px;}
+.filter-chip.active{background:var(--emerald);color:#fff;border-color:var(--emerald);}
+
+.service-card{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:10px;min-height:44px;}
+.service-card .ic{width:44px;height:44px;border-radius:12px;background:var(--emerald-tint);color:var(--emerald-dark);display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+.service-card .body{flex:1;min-width:0;}
+.service-card .title{font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.service-card .sub{font-size:11.5px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.service-card .sub .meta{display:flex;align-items:center;gap:3px;}
+.service-card .chev{color:var(--muted);flex:0 0 auto;}
+.tag-featured{background:var(--warning-bg);color:var(--warning);font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:6px;}
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty-state .ic{width:44px;height:44px;margin:0 auto 12px;color:var(--border);}
+.empty-state .ic svg{width:100%;height:100%;}
+
+.tx-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;}
+.tx-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;gap:8px;}
+.tx-ref{font-size:11px;color:var(--muted);}
+.tx-title{font-size:14px;font-weight:700;margin-top:2px;}
+.badge{font-size:10.5px;font-weight:700;padding:5px 10px;border-radius:999px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px;}
+.b-review{background:var(--warning-bg);color:var(--warning);}
+.b-pay{background:var(--error-bg);color:var(--error);}
+.b-progress{background:var(--emerald-tint);color:var(--emerald-dark);}
+.b-done{background:var(--success-bg);color:var(--success);}
+.tx-foot{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);}
+.tx-foot .meta{display:flex;align-items:center;gap:4px;}
+
+.bottom-nav{display:flex;border-top:1px solid var(--border);background:var(--surface);}
+.bn-item{flex:1;padding:9px 4px 10px;text-align:center;border:none;background:transparent;color:var(--muted);font-size:10.5px;font-weight:600;min-height:52px;display:flex;flex-direction:column;align-items:center;gap:4px;justify-content:center;}
+.bn-item.active{color:var(--emerald);}
+
+.btn-primary{background:var(--emerald);color:#fff;border:none;border-radius:12px;padding:14px;font-weight:700;font-size:14px;width:100%;min-height:48px;display:flex;align-items:center;justify-content:center;gap:8px;transition:transform .08s;}
+.btn-primary:active{transform:scale(.98);}
+.btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--border);border-radius:12px;padding:13px;font-weight:700;font-size:13.5px;width:100%;min-height:46px;display:flex;align-items:center;justify-content:center;gap:8px;}
+.back-row{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.back-row .bk{width:38px;height:38px;border-radius:10px;background:var(--navy-tint);border:none;display:flex;align-items:center;justify-content:center;color:var(--navy);}
+.back-row h2{font-size:16px;margin:0;}
+
+.detail-hero{background:var(--navy);border-radius:var(--radius);padding:18px;color:#fff;margin-bottom:18px;border:1px solid var(--navy);}
+.detail-hero .r1{font-size:11px;opacity:.75;display:flex;align-items:center;gap:6px;}
+.detail-hero .r2{font-size:17px;font-weight:800;margin:6px 0 10px;}
+.detail-hero .r3{font-size:11.5px;opacity:.85;display:flex;align-items:center;gap:6px;color:var(--emerald-tint);}
+.fee-row{display:flex;justify-content:space-between;font-size:12.5px;padding:10px 0;border-bottom:1px dashed var(--border);}
+.fee-row:last-child{border-bottom:none;font-weight:800;font-size:14px;}
+.req-chip{display:inline-flex;align-items:center;gap:6px;background:var(--navy-tint);border-radius:999px;padding:7px 12px;font-size:11.5px;margin:0 6px 8px 0;}
+
+.timeline{margin:6px 0 20px;}
+.t-step{display:flex;gap:12px;position:relative;padding-bottom:22px;}
+.t-step:last-child{padding-bottom:0;}
+.t-line{width:26px;display:flex;flex-direction:column;align-items:center;}
+.t-dot{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:0 0 auto;}
+.t-dot.done{background:var(--success);color:#fff;}
+.t-dot.now{background:var(--emerald);color:#fff;box-shadow:0 0 0 4px var(--emerald-tint);}
+.t-dot.pending{background:var(--border);color:var(--muted);}
+.t-body b{font-size:13px;display:block;}
+.t-body span{font-size:11px;color:var(--muted);}
+.t-bar{width:2px;flex:1;background:var(--border);margin-top:2px;}
+
+.wizard-steps{display:flex;gap:4px;margin-bottom:18px;}
+.wizard-steps .seg{flex:1;height:4px;border-radius:99px;background:var(--border);}
+.wizard-steps .seg.on{background:var(--emerald);}
+.form-field{margin-bottom:14px;}
+.form-field label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px;font-weight:600;}
+.form-field input,.form-field select{width:100%;padding:12px 13px;border-radius:11px;border:1px solid var(--border);background:var(--bg);font-family:inherit;font-size:13.5px;color:var(--text);min-height:44px;}
+.form-field input:focus,.form-field select:focus{outline:none;border-color:var(--emerald);box-shadow:var(--focus);}
+.upload-box{border:1.5px dashed var(--border);border-radius:14px;padding:22px;text-align:center;color:var(--muted);font-size:12px;margin-bottom:10px;display:flex;flex-direction:column;align-items:center;gap:8px;}
+
+.doc-card{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:11px;margin-bottom:9px;min-height:44px;}
+.doc-card .ic{width:38px;height:38px;border-radius:9px;background:var(--navy-tint);color:var(--navy);display:flex;align-items:center;justify-content:center;}
+.doc-card .meta b{font-size:12.5px;display:block;}
+.doc-card .meta span{font-size:10.5px;color:var(--muted);}
+.doc-card .stat{margin-inline-start:auto;font-size:10px;font-weight:700;padding:4px 9px;border-radius:99px;display:flex;align-items:center;gap:4px;}
+
+.profile-row{display:flex;align-items:center;justify-content:space-between;padding:13px 4px;border-bottom:1px solid var(--border);font-size:13px;min-height:44px;}
+.profile-row .l{display:flex;align-items:center;gap:11px;}
+.profile-row .l .ic{color:var(--muted);}
+
+/* ---------- Admin ---------- */
+.admin-wrap{display:grid;grid-template-columns:220px 1fr;gap:0;background:var(--surface);border-radius:20px;border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow);min-height:720px;}
+.admin-side{background:var(--navy);color:#fff;padding:22px 14px;}
+.admin-side .brand{font-weight:800;font-size:16px;margin-bottom:22px;padding:0 8px;display:flex;align-items:center;gap:8px;}
+.admin-side a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;color:rgba(255,255,255,.75);font-size:13px;font-weight:600;margin-bottom:2px;text-decoration:none;cursor:pointer;min-height:40px;}
+.admin-side a.active{background:rgba(255,255,255,.14);color:#fff;}
+.admin-side a .badge-new{margin-inline-start:auto;background:var(--emerald);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:6px;}
+.admin-main{padding:26px 28px;}
+.admin-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;}
+.admin-head h1{font-size:19px;margin:0;display:flex;align-items:center;gap:10px;}
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:24px;}
+.kpi-card{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px;}
+.kpi-card .top{display:flex;justify-content:space-between;align-items:center;}
+.kpi-card .icwrap{width:30px;height:30px;border-radius:8px;background:var(--emerald-tint);color:var(--emerald-dark);display:flex;align-items:center;justify-content:center;}
+.kpi-card .v{font-size:21px;font-weight:800;}
+.kpi-card .l{font-size:11px;color:var(--muted);}
+.two-col{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;}
+.panel{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:16px;}
+.panel h3{margin:0 0 12px;font-size:13.5px;display:flex;align-items:center;gap:8px;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:11.5px;}
+.bar-row .lab{width:90px;color:var(--muted);flex:0 0 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bar-track{flex:1;height:8px;background:var(--border);border-radius:99px;overflow:hidden;}
+.bar-fill{height:100%;background:var(--emerald);border-radius:99px;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;}
+th{text-align:start;color:var(--muted);font-weight:600;font-size:11px;padding:9px 10px;border-bottom:1px solid var(--border);}
+td{padding:11px 10px;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+.kanban{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.kan-col{background:var(--bg);border-radius:12px;padding:10px;min-height:340px;}
+.kan-col h4{font-size:11.5px;margin:2px 4px 10px;color:var(--muted);display:flex;justify-content:space-between;}
+.kan-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;margin-bottom:8px;font-size:11.5px;box-shadow:0 2px 6px rgba(0,0,0,.04);}
+.kan-card b{display:block;font-size:12px;margin-bottom:4px;}
+.kan-card .who{color:var(--muted);font-size:10.5px;margin-top:6px;display:flex;align-items:center;gap:4px;}
+
+/* Experiments / A-B test */
+.ab-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.ab-card{background:var(--bg);border:2px solid var(--border);border-radius:16px;padding:18px;position:relative;}
+.ab-card.winner{border-color:var(--emerald);}
+.ab-card .ab-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.ab-card .ab-tag{font-size:11px;font-weight:800;padding:4px 10px;border-radius:8px;background:var(--navy);color:#fff;}
+.ab-card.winner .ab-tag{background:var(--emerald);}
+.ab-preview{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:14px;}
+.ab-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.ab-metric{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px;}
+.ab-metric .v{font-size:17px;font-weight:800;}
+.ab-metric .l{font-size:10.5px;color:var(--muted);}
+.ab-metric .delta{font-size:10px;font-weight:700;display:inline-flex;align-items:center;gap:2px;margin-top:2px;}
+.ab-metric .delta.up{color:var(--success);}
+.win-banner{display:flex;align-items:center;gap:10px;background:var(--emerald-tint);color:var(--emerald-dark);border-radius:12px;padding:14px 16px;font-size:12.5px;margin-bottom:18px;}
+.win-banner b{font-size:13.5px;}
+.confidence-bar{height:10px;border-radius:99px;background:var(--border);overflow:hidden;margin-top:10px;display:flex;}
+.confidence-bar .a{background:var(--navy);}
+.confidence-bar .b{background:var(--emerald);}
+.apply-row{display:flex;gap:10px;margin-top:14px;}
+.apply-row button{flex:1;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--surface);font-size:12px;font-weight:700;color:var(--text);min-height:40px;}
+.apply-row button.on{background:var(--emerald);color:#fff;border-color:var(--emerald);}
+
+/* ============== Flat, government-grade finish ==============
+   The UAE federal Design System explicitly recommends Flat UI over gradients/
+   shadows/3D effects for government-facing apps — it reads as clearer, more
+   accessible, and more trustworthy. So: solid fills, thin borders, minimal
+   elevation, and motion used only where it communicates state (loading,
+   live status) rather than as decoration. */
+
+/* duotone: soft flat fill behind a crisp stroke on every closed shape */
+.icon circle,.icon rect{fill:currentColor;fill-opacity:.14;}
+
+/* one restrained reveal per screen change — not per-card */
+@keyframes riseIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+.reveal{animation:riseIn .22s ease both;}
+
+/* live-status pulse — the one deliberate motion accent for "in progress" */
+@keyframes pulseRing{0%,100%{box-shadow:0 0 0 3px var(--emerald-tint);}50%{box-shadow:0 0 0 6px var(--emerald-tint);}}
+.t-dot.now{animation:pulseRing 2.2s ease-in-out infinite;}
+
+/* tap feedback across every interactive surface */
+.service-card,.tx-card,.doc-card,.quick-item,.filter-chip,.profile-row,.icon-btn,.kan-card,.status-chip,.bn-item,.top-tabs button,.admin-side a{
+  transition:transform .1s ease, background-color .15s ease, border-color .15s ease;
+}
+.service-card:active,.tx-card:active,.doc-card:active,.quick-item:active,.filter-chip:active,.icon-btn:active,.status-chip:active{transform:scale(.97);}
+.admin-main .kan-card:hover{background:var(--navy-tint);}
+.admin-main tr:hover td{background:var(--navy-tint);}
+.admin-side a:hover{background:rgba(255,255,255,.08);}
+
+/* bottom-nav: icon lifts into a flat filled pill when active — no shadow */
+.bn-item .ic-wrap{width:36px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:9px;transition:background .2s ease, transform .2s ease;}
+.bn-item.active .ic-wrap{background:var(--emerald-tint);transform:translateY(-2px);}
+.bn-item span:last-child{transition:transform .2s ease;}
+
+.qi-ic{background:var(--emerald-tint);}
+.kpi-card .icwrap{background:var(--emerald-tint);}
+
+/* status bar + title bar — official pattern: back/title/notif/avatar stays in
+   the same physical order regardless of language (only text alignment flips) */
+.statusbar{height:30px;padding:0 22px;display:flex;align-items:center;justify-content:space-between;background:var(--navy);color:#fff;font-size:12px;font-weight:600;font-family:var(--font-en);}
+.statusbar .sb-icons{display:flex;align-items:center;gap:5px;}
+.titlebar{direction:ltr;display:flex;align-items:center;gap:10px;padding:12px 16px;background:var(--surface);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:5;}
+.titlebar .tb-back,.titlebar .tb-icon,.titlebar .tb-avatar{width:34px;height:34px;border-radius:9px;border:none;display:flex;align-items:center;justify-content:center;flex:0 0 auto;background:var(--navy-tint);color:var(--navy);position:relative;}
+.titlebar .tb-avatar{background:var(--emerald-tint);color:var(--emerald-dark);font-weight:800;font-size:13px;font-family:var(--font-en);}
+.titlebar .tb-spacer{width:34px;flex:0 0 auto;}
+.titlebar .tb-title{flex:1;min-width:0;font-size:15px;font-weight:700;direction:auto;text-align:start;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.titlebar .tb-title.tb-greet{font-size:12.5px;font-weight:400;color:var(--muted);}
+.titlebar .tb-title.tb-greet b{display:block;font-size:16px;font-weight:800;color:var(--text);margin-top:1px;}
+
+@media (max-width:920px){
+  .admin-wrap{grid-template-columns:1fr;}
+  .admin-side{display:flex;gap:6px;overflow-x:auto;padding:12px;}
+  .admin-side .brand{display:none;}
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .two-col,.ab-grid{grid-template-columns:1fr;}
+  .kanban{grid-template-columns:1fr 1fr;overflow-x:auto;}
+}
+</style>
+</head>
+<body class="">
+<div class="lang-switch">
+  <button id="btn-ar" class="active" onclick="setLang('ar')">AR</button>
+  <button id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+
+<div class="app-shell">
+  <div class="top-tabs">
+    <button id="tab-customer" class="active" onclick="setMode('customer')" data-t="tab_customer">تطبيق العميل</button>
+    <button id="tab-admin" onclick="setMode('admin')" data-t="tab_admin">لوحة التحكم</button>
+  </div>
+
+  <div id="view-customer" class="phone-wrap">
+    <div class="phone">
+      <div class="dynamic-island"></div>
+      <div class="screen" id="screen-root"></div>
+      <div class="home-indicator"><div class="bar"></div></div>
+      <div class="bottom-nav">
+        <button class="bn-item active" data-nav="home" onclick="goScreen('home')" aria-label="Home"></button>
+        <button class="bn-item" data-nav="services" onclick="goScreen('services')" aria-label="Services"></button>
+        <button class="bn-item" data-nav="requests" onclick="goScreen('requests')" aria-label="Requests"></button>
+        <button class="bn-item" data-nav="notif" onclick="goScreen('notif')" aria-label="Notifications"></button>
+        <button class="bn-item" data-nav="profile" onclick="goScreen('profile')" aria-label="Profile"></button>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-admin" style="display:none;">
+    <div class="admin-wrap">
+      <div class="admin-side">
+        <div class="brand"></div>
+        <a class="active" data-anav="dashboard" onclick="goAdmin('dashboard')"></a>
+        <a data-anav="kanban" onclick="goAdmin('kanban')"></a>
+        <a data-anav="transactions" onclick="goAdmin('transactions')"></a>
+        <a data-anav="services" onclick="goAdmin('services')"></a>
+        <a data-anav="experiments" onclick="goAdmin('experiments')"></a>
+        <a data-anav="reports" onclick="goAdmin('reports')"></a>
+      </div>
+      <div class="admin-main" id="admin-root"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============== ICON SYSTEM ==============
+   Original minimal line-icon set, 24x24 viewBox, stroke=currentColor,
+   consistent 1.8 stroke weight — used everywhere instead of emoji so the
+   product reads as one coherent visual system across every surface. */
+const ICONS = {
+  home:'<path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5a1 1 0 0 0 1 1H10v-6h4v6h3.5a1 1 0 0 0 1-1V10"/>',
+  grid:'<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>',
+  file:'<path d="M6.5 2.5h8l5 5v13a1 1 0 0 1-1 1h-12a1 1 0 0 1-1-1v-17a1 1 0 0 1 1-1Z"/><path d="M14.5 2.5v5h5"/><path d="M9 13h6M9 17h4"/>',
+  bell:'<path d="M18 8.5a6 6 0 1 0-12 0c0 6.5-2.5 8.5-2.5 8.5h17s-2.5-2-2.5-8.5Z"/><path d="M13.7 20.5a2 2 0 0 1-3.4 0"/>',
+  user:'<circle cx="12" cy="8" r="3.6"/><path d="M4.5 20.5c0-4.1 3.4-7.5 7.5-7.5s7.5 3.4 7.5 7.5"/>',
+  search:'<circle cx="10.5" cy="10.5" r="6.5"/><path d="m20 20-4.3-4.3"/>',
+  chevronStart:'<path d="M15 18 9 12l6-6"/>',
+  chevronEnd:'<path d="M9 18l6-6-6-6"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>',
+  upload:'<path d="M12 4v11"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/>',
+  idcard:'<rect x="2.5" y="5.5" width="19" height="13" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13.5 10h5M13.5 14h3.5"/>',
+  building:'<path d="M5.5 21V5a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v16"/><path d="M9.5 21v-4.5h5V21"/><path d="M9 9h.01M15 9h.01M9 13h.01M15 13h.01"/>',
+  passport:'<rect x="4.5" y="2.5" width="15" height="19" rx="2"/><circle cx="12" cy="9" r="2.6"/><path d="M8.5 15.5h7M8.5 18.5h7"/>',
+  stamp:'<path d="M12 2.5a4 4 0 0 1 4 4c0 2.2-4 6.8-4 6.8s-4-4.6-4-6.8a4 4 0 0 1 4-4Z"/><path d="M6.5 21.5v-3a5.5 5.5 0 0 1 11 0v3"/><path d="M4 21.5h16"/>',
+  globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 4 6 4 9s-1.5 6.4-4 9c-2.5-2.6-4-6-4-9s1.5-6.4 4-9Z"/>',
+  family:'<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M2.5 21c0-3.9 2.9-7 6.5-7s6.5 3.1 6.5 7"/><path d="M15.5 14.2c2.3.4 4 2.6 4 5.3"/>',
+  car:'<path d="M3.5 13.5 5 9a2 2 0 0 1 1.9-1.4h10.2A2 2 0 0 1 19 9l1.5 4.5"/><rect x="2.5" y="13.5" width="19" height="5.5" rx="1.5"/><circle cx="7.5" cy="19" r="1.6"/><circle cx="16.5" cy="19" r="1.6"/>',
+  translate:'<rect x="3" y="4" width="12" height="9" rx="1.5"/><path d="M6 7.5h6M6 10.3c2.6-.2 4.4-1.6 5-2.8"/><rect x="9" y="11" width="12" height="9" rx="1.5"/><path d="M13 20l3-6.5 3 6.5M14.3 17.5h3.4"/>',
+  briefcase:'<rect x="2.5" y="7.5" width="19" height="12.5" rx="2"/><path d="M8.5 7.5V5.5a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v2"/><path d="M2.5 13h19"/>',
+  check:'<circle cx="12" cy="12" r="9"/><path d="m8 12.5 2.6 2.6L16.2 9"/>',
+  clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>',
+  card:'<rect x="2.5" y="5.5" width="19" height="13" rx="2"/><path d="M2.5 10h19"/>',
+  alert:'<path d="M12 3 22 20H2Z"/><path d="M12 9.5v4M12 16.5h.01"/>',
+  wallet:'<rect x="2.5" y="6.5" width="19" height="13.5" rx="2"/><path d="M2.5 10.5h19"/><circle cx="16.5" cy="14.5" r=".6" fill="currentColor" stroke="none"/>',
+  shield:'<path d="M12 2.5 20 6v6c0 5-3.4 8.6-8 10-4.6-1.4-8-5-8-10V6Z"/>',
+  help:'<circle cx="12" cy="12" r="9"/><path d="M9.3 9.3a2.7 2.7 0 1 1 3.8 2.5c-.8.4-1.1 1-1.1 1.9"/><path d="M12 17h.01"/>',
+  logout:'<path d="M9 20.5H5.5a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2H9"/><path d="m16.5 16.5 4.5-4.5-4.5-4.5"/><path d="M21 12H9.5"/>',
+  star:'<path d="m12 2.5 2.9 6 6.6.7-4.9 4.5 1.3 6.5L12 16.9l-5.9 3.3 1.3-6.5-4.9-4.5 6.6-.7Z"/>',
+  filter:'<path d="M3.5 4h17L14 12.5V19l-4 2v-8.5Z"/>',
+  trend:'<path d="M3 17 9 11l4 4 8-9"/><path d="M15 8h6v6"/>',
+  kanban:'<rect x="3" y="3" width="5.5" height="18" rx="1.3"/><rect x="10.2" y="3" width="5.5" height="12" rx="1.3"/><rect x="17.5" y="3" width="5.5" height="8" rx="1.3"/>',
+  chart:'<path d="M4 20V10M10 20V4M16 20v-7M4 20h16"/>',
+  gear:'<circle cx="12" cy="12" r="3.2"/><path d="M12 3v3M12 18v3M4.2 4.2l2.2 2.2M17.6 17.6l2.2 2.2M2 12h3M19 12h3M4.2 19.8l2.2-2.2M17.6 6.4l2.2-2.2"/>',
+  flask:'<path d="M9.5 2.5h5M10.2 2.5v6.4L5 18.1a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5.2-9.2V2.5"/><path d="M7.5 15h9"/>',
+  doc:'<path d="M6.5 2.5h8l5 5v13a1 1 0 0 1-1 1h-12a1 1 0 0 1-1-1v-17a1 1 0 0 1 1-1Z"/><path d="M14.5 2.5v5h5"/>',
+  message:'<path d="M21 11.5a8.5 8.5 0 0 1-12.4 7.5L4 20l1.1-4.4A8.5 8.5 0 1 1 21 11.5Z"/>',
+  bolt:'<path d="M13 2 4 14h6l-1 8 9-12h-6l1-8Z"/>',
+  share:'<circle cx="6" cy="12" r="2.3"/><circle cx="18" cy="6" r="2.3"/><circle cx="18" cy="18" r="2.3"/><path d="m8 11 8-4M8 13l8 4"/>',
+  location:'<path d="M12 21.5s7-6.4 7-12a7 7 0 1 0-14 0c0 5.6 7 12 7 12Z"/><circle cx="12" cy="9.3" r="2.4"/>',
+  cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+  users:'<circle cx="8.5" cy="8" r="3"/><circle cx="16.5" cy="9" r="2.4"/><path d="M2.5 20.5c0-3.6 2.7-6.5 6-6.5s6 2.9 6 6.5"/><path d="M15 14.5c2 .3 3.5 2.3 3.5 4.5"/>',
+  branch:'<circle cx="6" cy="5.5" r="2"/><circle cx="6" cy="18.5" r="2"/><circle cx="18" cy="9.5" r="2"/><path d="M6 7.5v9M6 9.5c0 4 4 4 9 4M16 9.5h0"/>',
+  signal:'<rect x="1.5" y="14" width="3" height="6.5" rx="1"/><rect x="7" y="10" width="3" height="10.5" rx="1"/><rect x="12.5" y="6" width="3" height="14.5" rx="1"/><rect x="18" y="2" width="3" height="18.5" rx="1"/>',
+  wifi:'<path d="M2.5 8.8a15 15 0 0 1 19 0"/><path d="M6 12.8a10 10 0 0 1 12 0"/><path d="M9.5 16.8a5 5 0 0 1 5 0"/><circle cx="12" cy="20" r="1" fill="currentColor" stroke="none"/>',
+  battery:'<rect x="1" y="6" width="19" height="10.5" rx="2.6"/><rect x="20.5" y="9.3" width="2" height="4" rx="1" fill="currentColor" stroke="none"/><rect x="3" y="8" width="14" height="6.5" rx="1.4" fill="currentColor" stroke="none"/>',
+};
+function I(name, cls){ return `<svg class="icon ${cls||''}" viewBox="0 0 24 24">${ICONS[name]||''}</svg>`; }
+
+/* ============== SERVICE CATALOG (expanded) ============== */
+const SERVICES = [
+  {id:'svc1', icon:'idcard', cat:'residency', feeGov:320, feeOff:150, days:'3-5', featured:true},
+  {id:'svc2', icon:'building', cat:'business', feeGov:1450, feeOff:700, days:'7-10', featured:true},
+  {id:'svc3', icon:'idcard', cat:'identity', feeGov:170, feeOff:140, days:'2-3', featured:false},
+  {id:'svc4', icon:'stamp', cat:'attestation', feeGov:150, feeOff:60, days:'1-2', featured:false},
+  {id:'svc5', icon:'globe', cat:'visa', feeGov:290, feeOff:120, days:'3-4', featured:true},
+  {id:'svc6', icon:'family', cat:'family', feeGov:210, feeOff:90, days:'4-6', featured:false},
+  {id:'svc7', icon:'briefcase', cat:'business', feeGov:180, feeOff:80, days:'2-3', featured:false},
+  {id:'svc8', icon:'translate', cat:'attestation', feeGov:0, feeOff:120, days:'1', featured:false},
+  {id:'svc9', icon:'car', cat:'other', feeGov:135, feeOff:50, days:'1', featured:false},
+  {id:'svc10', icon:'building', cat:'other', feeGov:410, feeOff:200, days:'5-7', featured:false},
+];
+const CATS = ['all','residency','business','identity','attestation','visa','family','other'];
+
+const T = {
+  tab_customer:{ar:"تطبيق العميل",en:"Customer App"}, tab_admin:{ar:"لوحة التحكم",en:"Admin Dashboard"},
+  nav_home:{ar:"الرئيسية",en:"Home"}, nav_services:{ar:"الخدمات",en:"Services"}, nav_requests:{ar:"طلباتي",en:"Requests"},
+  nav_notif:{ar:"الإشعارات",en:"Notifications"}, nav_profile:{ar:"حسابي",en:"Profile"},
+  a_dashboard:{ar:"لوحة القيادة",en:"Dashboard"}, a_ops:{ar:"لوحة العمليات",en:"Operations"}, a_tx:{ar:"المعاملات",en:"Transactions"},
+  a_services:{ar:"الخدمات",en:"Services"}, a_reports:{ar:"التقارير",en:"Reports"}, a_experiments:{ar:"اختبار A/B",en:"A/B Testing"},
+  hello:{ar:"أهلاً بعودتك",en:"Welcome back"}, name:{ar:"هشام",en:"Hisham"},
+  search:{ar:"ما الخدمة التي تبحث عنها؟",en:"What service are you looking for?"},
+  q_new:{ar:"طلب جديد",en:"New Request"}, q_upload:{ar:"رفع مستند",en:"Upload Doc"}, q_track:{ar:"متابعة معاملة",en:"Track Request"}, q_contact:{ar:"تواصل معنا",en:"Contact Us"},
+  active_tx:{ar:"نشطة",en:"Active"}, pending_action:{ar:"إجراء مطلوب",en:"Action Needed"}, awaiting_pay:{ar:"بانتظار الدفع",en:"Awaiting Pay"}, completed_tx:{ar:"مكتملة",en:"Completed"},
+  popular:{ar:"الخدمات الأكثر طلباً",en:"Popular Services"}, view_all:{ar:"عرض الكل",en:"View all"},
+  svc1n:{ar:"تجديد الإقامة",en:"Residency Renewal"}, svc2n:{ar:"إصدار رخصة تجارية",en:"Trade License Issuance"},
+  svc3n:{ar:"تجديد الهوية الإماراتية",en:"Emirates ID Renewal"}, svc4n:{ar:"توثيق مستندات",en:"Document Attestation"},
+  svc5n:{ar:"تأشيرة زيارة",en:"Visit Visa"}, svc6n:{ar:"نقل كفالة عامل منزلي",en:"Domestic Worker Transfer"},
+  svc7n:{ar:"تجديد بطاقة تأسيس",en:"Establishment Card Renewal"}, svc8n:{ar:"ترجمة معتمدة",en:"Certified Translation"},
+  svc9n:{ar:"تجديد ملكية مركبة",en:"Vehicle Registration Renewal"}, svc10n:{ar:"رخصة بلدية",en:"Municipality Trade Permit"},
+  cat_all:{ar:"الكل",en:"All"}, cat_residency:{ar:"الإقامة",en:"Residency"}, cat_business:{ar:"الأعمال",en:"Business"},
+  cat_identity:{ar:"الهوية",en:"Identity"}, cat_attestation:{ar:"التوثيق",en:"Attestation"}, cat_visa:{ar:"التأشيرات",en:"Visas"},
+  cat_family:{ar:"الأسرة",en:"Family"}, cat_other:{ar:"أخرى",en:"Other"},
+  featured_lbl:{ar:"مميزة",en:"Featured"}, days_lbl:{ar:"يوم",en:"days"},
+  services_title:{ar:"الخدمات",en:"Services"}, no_results:{ar:"لا توجد خدمات مطابقة",en:"No matching services"},
+  no_results_sub:{ar:"جرّب تصنيفاً آخر أو كلمة بحث مختلفة",en:"Try another category or search term"},
+  my_requests:{ar:"طلباتي",en:"My Requests"},
+  status_review:{ar:"قيد المراجعة",en:"Under Review"}, status_pay:{ar:"بانتظار الدفع",en:"Awaiting Payment"}, status_progress:{ar:"جاري التنفيذ",en:"Processing"}, status_done:{ar:"مكتملة",en:"Completed"},
+  created:{ar:"أُنشئت",en:"Created"}, total:{ar:"الإجمالي",en:"Total"},
+  start_req:{ar:"ابدأ الطلب",en:"Start Request"},
+  about:{ar:"عن الخدمة",en:"About service"}, about_txt:{ar:"تجديد الإقامة لمدة سنتين أو ثلاث سنوات مع إمكانية الإرسال والمتابعة الكاملة إلكترونياً.",en:"Renew your 2 or 3-year residency with full online submission and tracking."},
+  requirements:{ar:"المستندات المطلوبة",en:"Required Documents"},
+  r_passport:{ar:"جواز السفر",en:"Passport"}, r_photo:{ar:"صورة شخصية",en:"Personal Photo"}, r_eid:{ar:"الهوية الإماراتية",en:"Emirates ID"},
+  gov_fee:{ar:"الرسوم الحكومية",en:"Government Fee"}, office_fee:{ar:"رسوم المكتب",en:"Office Fee"}, vat:{ar:"ضريبة القيمة المضافة",en:"VAT"}, total_est:{ar:"الإجمالي التقديري",en:"Estimated Total"},
+  step_applicant:{ar:"معلومات مقدم الطلب",en:"Applicant Information"},
+  full_name:{ar:"الاسم الكامل",en:"Full Name"}, phone:{ar:"رقم الهاتف",en:"Phone Number"}, nationality:{ar:"الجنسية",en:"Nationality"},
+  next:{ar:"التالي",en:"Next"}, back:{ar:"رجوع",en:"Back"},
+  upload_docs:{ar:"رفع المستندات",en:"Upload Documents"}, upload_hint:{ar:"اسحب الملف هنا أو اضغط للاختيار",en:"Drag file here or tap to browse"},
+  tx_ref:{ar:"معاملة رقم",en:"Transaction"},
+  timeline_title:{ar:"مسار المعاملة",en:"Progress Timeline"},
+  t1:{ar:"تم استلام الطلب",en:"Request Received"}, t2:{ar:"قيد المراجعة",en:"Under Review"}, t3:{ar:"تم استلام الدفع",en:"Payment Received"}, t4:{ar:"جاري تنفيذ المعاملة",en:"Processing at Authority"}, t5:{ar:"تم الإنجاز",en:"Completed"},
+  contact_officer:{ar:"تواصل مع الموظف المسؤول",en:"Contact Officer"},
+  wallet:{ar:"محفظة المستندات",en:"Document Wallet"}, add_doc:{ar:"إضافة مستند",en:"Add Document"},
+  doc1:{ar:"جواز السفر.pdf",en:"passport.pdf"}, doc2:{ar:"الهوية الإماراتية.jpg",en:"emirates_id.jpg"}, doc3:{ar:"عقد الإيجار.pdf",en:"tenancy_contract.pdf"},
+  verified:{ar:"موثّق",en:"Verified"}, pending_v:{ar:"قيد التحقق",en:"Pending"}, expiring:{ar:"ينتهي قريباً",en:"Expiring Soon"},
+  profile_title:{ar:"حسابي",en:"My Profile"},
+  p_personal:{ar:"المعلومات الشخصية",en:"Personal Information"}, p_companies:{ar:"شركاتي",en:"My Companies"}, p_wallet:{ar:"محفظة المستندات",en:"Document Wallet"},
+  p_invoices:{ar:"الفواتير",en:"Invoices"}, p_appointments:{ar:"المواعيد",en:"Appointments"}, p_security:{ar:"الأمان وتسجيل الدخول",en:"Security & Login"}, p_help:{ar:"مركز المساعدة",en:"Help Center"}, p_logout:{ar:"تسجيل الخروج",en:"Log Out"},
+  notif_title:{ar:"الإشعارات",en:"Notifications"},
+  n1:{ar:"تم استلام مستنداتك بنجاح",en:"Your documents were received"}, n2:{ar:"عرض السعر جاهز للموافقة",en:"Your quotation is ready to approve"}, n3:{ar:"معاملتك جاهزة للاستلام",en:"Your transaction is ready for pickup"},
+  kpi1:{ar:"طلبات اليوم",en:"Requests Today"}, kpi2:{ar:"بانتظار المستندات",en:"Awaiting Documents"}, kpi3:{ar:"بانتظار الدفع",en:"Awaiting Payment"}, kpi4:{ar:"إيراد اليوم (د.إ)",en:"Revenue Today (AED)"}, kpi5:{ar:"متوسط وقت الإنجاز",en:"Avg. Processing Time"},
+  admin_title_dash:{ar:"لوحة القيادة",en:"Dashboard"}, admin_title_kan:{ar:"لوحة العمليات",en:"Operations Board"}, admin_title_tx:{ar:"المعاملات",en:"Transactions"},
+  admin_title_services:{ar:"إدارة الخدمات",en:"Services Management"}, admin_title_reports:{ar:"التقارير",en:"Reports"}, admin_title_exp:{ar:"اختبار A/B — بطاقة الخدمة",en:"A/B Test — Service Card"},
+  by_service:{ar:"المعاملات حسب الخدمة",en:"Transactions by Service"}, emp_workload:{ar:"عبء العمل على الموظفين",en:"Employee Workload"},
+  col_new:{ar:"جديد",en:"New"}, col_review:{ar:"مراجعة",en:"Review"}, col_docs:{ar:"مستندات ناقصة",en:"Waiting Docs"}, col_pay:{ar:"بانتظار الدفع",en:"Waiting Payment"}, col_done:{ar:"مكتمل",en:"Completed"},
+  th_ref:{ar:"رقم المعاملة",en:"Reference"}, th_cust:{ar:"العميل",en:"Customer"}, th_svc:{ar:"الخدمة",en:"Service"}, th_status:{ar:"الحالة",en:"Status"}, th_amt:{ar:"المبلغ",en:"Amount"}, th_emp:{ar:"الموظف",en:"Officer"},
+  exp_hint:{ar:"تجربة حيّة تقارن تصميمين لبطاقة الخدمة على تطبيق العميل — النتائج محاكاة لأغراض العرض.",en:"A live experiment comparing two service-card designs on the customer app — results are simulated for demo purposes."},
+  variant_a:{ar:"النمط A — الحالي",en:"Variant A — Current"}, variant_b:{ar:"النمط B — أيقونة أكبر + سعر بارز",en:"Variant B — Bigger icon + visible price"},
+  impressions:{ar:"ظهور",en:"Impressions"}, ctr:{ar:"نسبة النقر",en:"Click-through"}, conv:{ar:"التحويل لطلب",en:"Conversion"}, time_on:{ar:"وقت القرار",en:"Decision time"},
+  confidence:{ar:"مستوى الثقة الإحصائية",en:"Statistical confidence"},
+  win_text:{ar:"يتفوق النمط B بفارق دال إحصائياً — سعر ظاهر فوراً يقلل التردد قبل فتح تفاصيل الخدمة.",en:"Variant B wins with statistical significance — showing price upfront reduces hesitation before opening service details."},
+  apply_live:{ar:"طبّق على التطبيق الحي",en:"Apply to live app"}, currently_active:{ar:"مُفعّل الآن",en:"Currently active"},
+  running_exp:{ar:"تجربة نشطة",en:"Running experiment"}, sample_size:{ar:"حجم العينة: 4,820 مستخدم على مدى 14 يوماً",en:"Sample size: 4,820 users over 14 days"},
+};
+let lang='ar', mode='customer', custScreen='home', adminScreen='dashboard';
+let svcFilterCat='all', svcSearchQ='';
+let cardVariant='A';
+
+function tr(key){ return T[key] ? T[key][lang] : key; }
+function svcName(id){ return tr(id+'n'); }
+function fmtMoney(n){ return n.toLocaleString(lang==='ar'?'ar-AE':'en-AE'); }
+function currency(){ return lang==='ar'?'د.إ':'AED'; }
+
+function setLang(l){
+  lang=l;
+  document.getElementById('btn-ar').classList.toggle('active',l==='ar');
+  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  document.documentElement.setAttribute('lang',l);
+  document.documentElement.setAttribute('dir', l==='ar'?'rtl':'ltr');
+  document.body.classList.toggle('lang-en', l==='en');
+  renderStatic(); renderCustomer(); renderAdmin();
+}
+function renderStatic(){
+  document.getElementById('tab-customer').textContent = tr('tab_customer');
+  document.getElementById('tab-admin').textContent = tr('tab_admin');
+  document.querySelector('#view-customer [data-nav="home"]').innerHTML = `<span class="ic-wrap">${I('home')}</span><span>${tr('nav_home')}</span>`;
+  document.querySelector('#view-customer [data-nav="services"]').innerHTML = `<span class="ic-wrap">${I('grid')}</span><span>${tr('nav_services')}</span>`;
+  document.querySelector('#view-customer [data-nav="requests"]').innerHTML = `<span class="ic-wrap">${I('file')}</span><span>${tr('nav_requests')}</span>`;
+  document.querySelector('#view-customer [data-nav="notif"]').innerHTML = `<span class="ic-wrap">${I('bell')}</span><span>${tr('nav_notif')}</span>`;
+  document.querySelector('#view-customer [data-nav="profile"]').innerHTML = `<span class="ic-wrap">${I('user')}</span><span>${tr('nav_profile')}</span>`;
+  document.querySelector('.admin-side .brand').innerHTML = I('bolt','icon-lg')+' إنجاز · Admin';
+  const navMap = {dashboard:['chart','a_dashboard'],kanban:['kanban','a_ops'],transactions:['file','a_tx'],services:['grid','a_services'],experiments:['flask','a_experiments'],reports:['trend','a_reports']};
+  Object.entries(navMap).forEach(([k,[ic,label]])=>{
+    const a = document.querySelector(`.admin-side a[data-anav="${k}"]`);
+    a.innerHTML = I(ic)+`<span>${tr(label)}</span>`+(k==='experiments'?`<span class="badge-new">${lang==='ar'?'جديد':'NEW'}</span>`:'');
+  });
+}
+function setMode(m){
+  mode=m;
+  document.getElementById('tab-customer').classList.toggle('active', m==='customer');
+  document.getElementById('tab-admin').classList.toggle('active', m==='admin');
+  document.getElementById('view-customer').style.display = m==='customer' ? 'flex':'none';
+  document.getElementById('view-admin').style.display = m==='admin' ? 'block':'none';
+}
+function goScreen(s){
+  if(custScreen!==s) screenHistory.push(custScreen);
+  custScreen=s; renderCustomer();
+  document.querySelectorAll('.bn-item').forEach(b=>b.classList.toggle('active', b.dataset.nav===s));
+}
+function goAdmin(s){ adminScreen=s; renderAdmin();
+  document.querySelectorAll('.admin-side a').forEach(a=>a.classList.toggle('active', a.dataset.anav===s));
+}
+function setCat(c){ svcFilterCat=c; renderCustomer(); }
+function setSearch(v){ svcSearchQ=v; renderCustomer(); }
+function chev(){ return I(lang==='ar'?'chevronStart':'chevronEnd','icon-sm'); }
+
+/* ---------------- CUSTOMER SCREENS ---------------- */
+/* Real device status bar (mirrors with reading direction, like iOS/Android) */
+function statusBar(){
+  return `<div class="statusbar"><span>9:41</span><span class="sb-icons">${I('signal','icon-sm')}${I('wifi','icon-sm')}${I('battery','icon-sm')}</span></div>`;
+}
+/* Official gov app title-bar pattern: back / title / notifications / avatar
+   stay in the same physical slot in both languages — only text alignment
+   and reading direction change. See docs/05-gov-design-reference.md. */
+function titleBar(title, showBack, isHome){
+  const back = showBack
+    ? `<button class="tb-back" onclick="goBack()">${I(lang==='ar'?'chevronStart':'chevronEnd','icon-sm')}</button>`
+    : `<div class="tb-spacer"></div>`;
+  const notif = `<button class="tb-icon" onclick="goScreen('notif')">${I('bell','icon-sm')}<span class="dot"></span></button>`;
+  const avatar = `<button class="tb-avatar">${lang==='ar'?'ه':'H'}</button>`;
+  const titleEl = isHome
+    ? `<div class="tb-title tb-greet" style="text-align:${lang==='ar'?'right':'left'}">${tr('hello')}<b>${tr('name')}</b></div>`
+    : `<div class="tb-title" style="text-align:${lang==='ar'?'right':'left'}">${title}</div>`;
+  return `<div class="titlebar">${back}${titleEl}${notif}${avatar}</div>`;
+}
+const SCREEN_META = {
+  home:{title:'', back:false, home:true},
+  services:{title:()=>tr('services_title'), back:false},
+  serviceDetail:{title:()=>svcName(activeServiceId), back:true},
+  wizard:{title:()=>tr('step_applicant'), back:true},
+  requests:{title:()=>tr('my_requests'), back:false},
+  requestDetail:{title:()=>svcName('svc1'), back:true},
+  wallet:{title:()=>tr('wallet'), back:true},
+  profile:{title:()=>tr('profile_title'), back:false},
+  notif:{title:()=>tr('notif_title'), back:false},
+};
+let screenHistory=['home'];
+function goBack(){ const prev = screenHistory.pop() || 'home'; custScreen=prev; renderCustomer();
+  document.querySelectorAll('.bn-item').forEach(b=>b.classList.toggle('active', b.dataset.nav===prev));
+}
+
+function renderCustomer(){
+  const root=document.getElementById('screen-root');
+  let body='';
+  if(custScreen==='home') body = screenHome();
+  else if(custScreen==='services') body = screenServices();
+  else if(custScreen==='serviceDetail') body = screenServiceDetail();
+  else if(custScreen==='wizard') body = screenWizard();
+  else if(custScreen==='requests') body = screenRequests();
+  else if(custScreen==='requestDetail') body = screenRequestDetail();
+  else if(custScreen==='wallet') body = screenWallet();
+  else if(custScreen==='profile') body = screenProfile();
+  else if(custScreen==='notif') body = screenNotif();
+  const meta = SCREEN_META[custScreen] || {};
+  const title = typeof meta.title==='function' ? meta.title() : (meta.title||'');
+  root.innerHTML = `<div class="reveal" style="display:flex;flex-direction:column;min-height:100%;">
+    ${statusBar()}
+    ${titleBar(title, !!meta.back, !!meta.home)}
+    <div class="screen-body">${body}</div>
+  </div>`;
+}
+
+function screenHome(){ return `
+  <div class="search-box" onclick="goScreen('services')">${I('search','icon-sm')}<span>${tr('search')}</span></div>
+  <div class="quick-grid">
+    <div class="quick-item" onclick="goScreen('wizard')"><div class="qi-ic">${I('plus','icon-sm')}</div>${tr('q_new')}</div>
+    <div class="quick-item" onclick="goScreen('wallet')"><div class="qi-ic">${I('upload','icon-sm')}</div>${tr('q_upload')}</div>
+    <div class="quick-item" onclick="goScreen('requests')"><div class="qi-ic">${I('search','icon-sm')}</div>${tr('q_track')}</div>
+    <div class="quick-item"><div class="qi-ic">${I('message','icon-sm')}</div>${tr('q_contact')}</div>
+  </div>
+  <div class="section-title">${lang==='ar'?'نظرة عامة':'Overview'}</div>
+  <div class="status-scroll">
+    <div class="status-chip c1"><div class="top">${I('trend','icon-sm')}<div class="num">3</div></div><div class="lbl">${tr('active_tx')}</div></div>
+    <div class="status-chip c2"><div class="top">${I('alert','icon-sm')}<div class="num">1</div></div><div class="lbl">${tr('pending_action')}</div></div>
+    <div class="status-chip c3"><div class="top">${I('card','icon-sm')}<div class="num">1</div></div><div class="lbl">${tr('awaiting_pay')}</div></div>
+    <div class="status-chip c4"><div class="top">${I('check','icon-sm')}<div class="num">12</div></div><div class="lbl">${tr('completed_tx')}</div></div>
+  </div>
+  <div class="section-title">${tr('popular')}<span class="link" onclick="goScreen('services')">${tr('view_all')}${chev()}</span></div>
+  ${SERVICES.filter(s=>s.featured).map(svcCard).join('')}
+`;}
+
+function svcCard(s){
+  const name = svcName(s.id);
+  if(cardVariant==='B' && mode==='customer'){
+    const total = s.feeGov+s.feeOff;
+    return `
+    <div class="service-card" onclick="openService('${s.id}')" style="align-items:stretch;">
+      <div class="ic" style="width:52px;height:52px;">${I(s.icon,'icon-lg')}</div>
+      <div class="body">
+        <div class="title">${name}${s.featured?`<span class="tag-featured">${tr('featured_lbl')}</span>`:''}</div>
+        <div class="sub"><span class="meta">${I('clock','icon-sm')} ${s.days} ${tr('days_lbl')}</span></div>
+        <div style="font-weight:800;font-size:14px;color:var(--emerald-dark);margin-top:6px;">${fmtMoney(total)} ${currency()}</div>
+      </div>
+      <div class="chev">${chev()}</div>
+    </div>`;
+  }
+  return `
+  <div class="service-card" onclick="openService('${s.id}')">
+    <div class="ic">${I(s.icon)}</div>
+    <div class="body">
+      <div class="title">${name}${s.featured?`<span class="tag-featured">${tr('featured_lbl')}</span>`:''}</div>
+      <div class="sub">
+        <span class="meta">${I('clock','icon-sm')} ${s.days} ${tr('days_lbl')}</span>
+        <span class="meta">${I('grid','icon-sm')} ${tr('cat_'+s.cat)}</span>
+      </div>
+    </div>
+    <div class="chev">${chev()}</div>
+  </div>`;
+}
+let activeServiceId='svc1';
+function openService(id){ activeServiceId=id; goScreen('serviceDetail'); }
+
+function screenServices(){
+  const filtered = SERVICES.filter(s=>{
+    const catOk = svcFilterCat==='all' || s.cat===svcFilterCat;
+    const q = svcSearchQ.trim().toLowerCase();
+    const qOk = !q || svcName(s.id).toLowerCase().includes(q);
+    return catOk && qOk;
+  });
+  return `
+  <div class="search-box"><input placeholder="${tr('search')}" value="${svcSearchQ}" oninput="setSearch(this.value)">${I('search','icon-sm')}</div>
+  <div class="chip-row">
+    ${CATS.map(c=>`<button class="filter-chip ${svcFilterCat===c?'active':''}" onclick="setCat('${c}')">${tr('cat_'+c)}</button>`).join('')}
+  </div>
+  ${filtered.length ? filtered.map(svcCard).join('') : `
+    <div class="empty-state">
+      <div class="ic">${I('search','')}</div>
+      <div style="font-weight:700;color:var(--text);margin-bottom:4px;">${tr('no_results')}</div>
+      <div style="font-size:12px;">${tr('no_results_sub')}</div>
+    </div>`}
+`;}
+
+function screenServiceDetail(){
+  const s = SERVICES.find(x=>x.id===activeServiceId) || SERVICES[0];
+  const vat = Math.round((s.feeGov+s.feeOff)*0.05*10)/10;
+  const total = s.feeGov+s.feeOff+vat;
+  return `
+  <div class="detail-hero">
+    <div class="r1">${I('grid','icon-sm')} ${tr('cat_'+s.cat)}</div>
+    <div class="r2">${svcName(s.id)}</div>
+    <div class="r3">${I('clock','icon-sm')} ${lang==='ar'?`${s.days} أيام عمل تقديرياً`:`Est. ${s.days} business days`}</div>
+  </div>
+  <div class="section-title">${tr('about')}</div>
+  <p style="font-size:12.5px;color:var(--muted);line-height:1.9;margin-top:-6px;">${tr('about_txt')}</p>
+  <div class="section-title">${tr('requirements')}</div>
+  <div style="margin-bottom:14px;">
+    <span class="req-chip">${I('passport','icon-sm')} ${tr('r_passport')}</span>
+    <span class="req-chip">${I('idcard','icon-sm')} ${tr('r_photo')}</span>
+    <span class="req-chip">${I('idcard','icon-sm')} ${tr('r_eid')}</span>
+  </div>
+  <div class="section-title">${tr('total_est')}</div>
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:6px 14px;margin-bottom:18px;">
+    <div class="fee-row"><span>${tr('gov_fee')}</span><span>${fmtMoney(s.feeGov)} ${currency()}</span></div>
+    <div class="fee-row"><span>${tr('office_fee')}</span><span>${fmtMoney(s.feeOff)} ${currency()}</span></div>
+    <div class="fee-row"><span>${tr('vat')}</span><span>${vat} ${currency()}</span></div>
+    <div class="fee-row"><span>${tr('total_est')}</span><span>${fmtMoney(total)} ${currency()}</span></div>
+  </div>
+  <button class="btn-primary" onclick="goScreen('wizard')">${I('plus','icon-sm')}${tr('start_req')}</button>
+  <div style="height:14px;"></div>
+`;}
+
+function screenWizard(){ return `
+  <div class="wizard-steps"><div class="seg on"></div><div class="seg on"></div><div class="seg"></div><div class="seg"></div><div class="seg"></div></div>
+  <div class="form-field"><label>${tr('full_name')}</label><input placeholder="${lang==='ar'?'الاسم كما في جواز السفر':'Name as per passport'}"></div>
+  <div class="form-field"><label>${tr('phone')}</label><input placeholder="+971 5X XXX XXXX"></div>
+  <div class="form-field"><label>${tr('nationality')}</label><select><option>${lang==='ar'?'السودان':'Sudan'}</option><option>${lang==='ar'?'مصر':'Egypt'}</option><option>${lang==='ar'?'الهند':'India'}</option></select></div>
+  <div class="section-title">${tr('upload_docs')}</div>
+  <div class="upload-box">${I('upload')}<span>${tr('upload_hint')}</span></div>
+  <button class="btn-primary" onclick="goScreen('requestDetail')">${tr('next')}${I(lang==='ar'?'chevronStart':'chevronEnd','icon-sm')}</button>
+  <div style="height:14px;"></div>
+`;}
+
+function statusIcon(k){ return {status_review:'clock',status_pay:'card',status_progress:'gear',status_done:'check'}[k]; }
+function txCard(ref,titleKey,statusKey,badgeClass,amt){ return `
+  <div class="tx-card" onclick="goScreen('requestDetail')">
+    <div class="tx-top">
+      <div><div class="tx-ref">${tr('tx_ref')} ${ref}</div><div class="tx-title">${svcName(titleKey)}</div></div>
+      <span class="badge ${badgeClass}">${I(statusIcon(statusKey),'icon-sm')}${tr(statusKey)}</span>
+    </div>
+    <div class="tx-foot"><span class="meta">${I('cal','icon-sm')}${tr('created')}: 12 ${lang==='ar'?'سبتمبر':'Sep'}</span><span class="meta">${tr('total')}: ${amt} ${currency()}</span></div>
+  </div>`;
+}
+function screenRequests(){ return `
+  ${txCard('ENJ-2026-000123','svc1','status_progress','b-progress','493.5')}
+  ${txCard('ENJ-2026-000119','svc2','status_pay','b-pay','2,150')}
+  ${txCard('ENJ-2026-000108','svc3','status_review','b-review','310')}
+  ${txCard('ENJ-2026-000091','svc4','status_done','b-done','210')}
+`;}
+function screenRequestDetail(){ return `
+  <div class="detail-hero">
+    <div class="r1">${I('file','icon-sm')} ${tr('tx_ref')} ENJ-2026-000123</div>
+    <div class="r2">${svcName('svc1')}</div>
+    <span class="badge" style="background:rgba(255,255,255,.2);color:#fff;">${I('gear','icon-sm')}${tr('status_progress')}</span>
+  </div>
+  <div class="section-title">${tr('timeline_title')}</div>
+  <div class="timeline">
+    ${tStep('done',tr('t1'),'12 Sep · 09:14')}
+    ${tStep('done',tr('t2'),'12 Sep · 15:40')}
+    ${tStep('done',tr('t3'),'13 Sep · 10:02')}
+    ${tStep('now',tr('t4'),lang==='ar'?'جارٍ الآن':'In progress')}
+    ${tStep('pending',tr('t5'),'—',true)}
+  </div>
+  <button class="btn-outline">${I('message','icon-sm')}${tr('contact_officer')}</button>
+  <div style="height:14px;"></div>
+`;}
+function tStep(state,title,sub,last){
+  const ic = state==='done' ? 'check' : state==='now' ? 'bolt' : 'clock';
+  return `
+  <div class="t-step">
+    <div class="t-line"><div class="t-dot ${state}">${I(ic,'icon-sm')}</div>${!last?'<div class="t-bar"></div>':''}</div>
+    <div class="t-body"><b>${title}</b><span>${sub}</span></div>
+  </div>`;
+}
+function screenWallet(){ return `
+  ${docCard('passport',tr('doc1'),tr('verified'),'var(--success-bg)','var(--success)','check')}
+  ${docCard('idcard',tr('doc2'),tr('pending_v'),'var(--warning-bg)','var(--warning)','clock')}
+  ${docCard('building',tr('doc3'),tr('expiring'),'var(--error-bg)','var(--error)','alert')}
+  <button class="btn-outline" style="margin-top:8px;">${I('plus','icon-sm')}${tr('add_doc')}</button>
+  <div style="height:14px;"></div>
+`;}
+function docCard(ic,name,status,bg,color,statIc){ return `
+  <div class="doc-card">
+    <div class="ic">${I(ic,'icon-sm')}</div>
+    <div class="meta"><b>${name}</b><span>PDF · 1.2MB</span></div>
+    <span class="stat" style="background:${bg};color:${color};">${I(statIc,'icon-sm')}${status}</span>
+  </div>`;
+}
+function screenProfile(){ return `
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;">
+    <div class="icon-btn" style="width:54px;height:54px;border-radius:16px;font-size:20px;background:var(--navy-tint);color:var(--navy);font-weight:800;">${lang==='ar'?'ه':'H'}</div>
+    <div><b style="font-size:15px;">${tr('name')} A.</b><div style="font-size:11.5px;color:var(--muted);">+971 5X XXX XXXX</div></div>
+  </div>
+  ${pRow('user',tr('p_personal'))}${pRow('building',tr('p_companies'))}${pRow('wallet',tr('p_wallet'),'wallet')}
+  ${pRow('card',tr('p_invoices'))}${pRow('cal',tr('p_appointments'))}${pRow('shield',tr('p_security'))}${pRow('help',tr('p_help'))}
+  <div style="height:8px;"></div>
+  <button class="btn-outline" style="color:var(--error);border-color:var(--error-bg);">${I('logout','icon-sm')}${tr('p_logout')}</button>
+  <div style="height:14px;"></div>
+`;}
+function pRow(ic,label,nav){ return `<div class="profile-row" ${nav?`onclick="goScreen('${nav}')"`:''}><div class="l"><span class="ic">${I(ic,'icon-sm')}</span>${label}</div><span class="ic">${chev()}</span></div>`; }
+function screenNotif(){ return `
+  ${notifRow('check',tr('n1'),'9:14 AM')}
+  ${notifRow('card',tr('n2'),lang==='ar'?'أمس':'Yesterday')}
+  ${notifRow('star',tr('n3'),'2 Sep')}
+`;}
+function notifRow(ic,txt,time){ return `
+  <div class="service-card"><div class="ic">${I(ic)}</div><div class="body"><div class="title" style="font-weight:600;">${txt}</div><div class="sub"><span class="meta">${time}</span></div></div></div>`;
+}
+
+/* ---------------- ADMIN SCREENS ---------------- */
+function renderAdmin(){
+  const root=document.getElementById('admin-root');
+  let html='';
+  if(adminScreen==='dashboard') html = adminDashboard();
+  else if(adminScreen==='kanban') html = adminKanban();
+  else if(adminScreen==='transactions') html = adminTransactions();
+  else if(adminScreen==='services') html = adminServices();
+  else if(adminScreen==='experiments') html = adminExperiments();
+  else if(adminScreen==='reports') html = adminReports();
+  root.innerHTML = `<div class="reveal">${html}</div>`;
+}
+function kpi(ic,val,lblKey,up){ return `
+  <div class="kpi-card ${up?'up':''}"><div class="top"><div class="icwrap">${I(ic,'icon-sm')}</div></div><div class="v">${val}</div><div class="l">${tr(lblKey)}</div></div>`;
+}
+function adminDashboard(){ return `
+  <div class="admin-head"><h1>${I('chart')}${tr('admin_title_dash')}</h1></div>
+  <div class="kpi-grid">
+    ${kpi('file','27','kpi1',true)}
+    ${kpi('doc','6','kpi2')}
+    ${kpi('card','4','kpi3')}
+    ${kpi('trend','8,420','kpi4',true)}
+    ${kpi('clock','2.4d','kpi5')}
+  </div>
+  <div class="two-col">
+    <div class="panel"><h3>${I('chart','icon-sm')}${tr('by_service')}</h3>
+      ${barRow(svcName('svc1'),78)}${barRow(svcName('svc2'),52)}${barRow(svcName('svc5'),64)}${barRow(svcName('svc4'),34)}
+    </div>
+    <div class="panel"><h3>${I('users','icon-sm')}${tr('emp_workload')}</h3>
+      ${barRow('Osama',9)}${barRow('Sunil',6)}${barRow('Fatima',12)}
+    </div>
+  </div>
+`;}
+function barRow(label,pct){ return `
+  <div class="bar-row"><div class="lab">${label}</div><div class="bar-track"><div class="bar-fill" style="width:${pct}%;"></div></div><div>${pct}%</div></div>`;
+}
+function adminKanban(){ const col=(t,items)=>`<div class="kan-col"><h4>${t}<span>${items.length}</span></h4>${items.map(i=>`<div class="kan-card"><b>${i[0]}</b>${i[1]}<div class="who">${I('user','icon-sm')}${i[2]}</div></div>`).join('')}</div>`;
+  return `
+  <div class="admin-head"><h1>${I('kanban')}${tr('admin_title_kan')}</h1></div>
+  <div class="kanban">
+    ${col(tr('col_new'),[['ENJ-000131',svcName('svc1'),'—'],['ENJ-000132',svcName('svc4'),'—']])}
+    ${col(tr('col_review'),[['ENJ-000123',svcName('svc1'),'Osama'],['ENJ-000108',svcName('svc3'),'Sunil']])}
+    ${col(tr('col_docs'),[['ENJ-000119',svcName('svc2'),'Fatima']])}
+    ${col(tr('col_pay'),[['ENJ-000119',svcName('svc2'),'Fatima'],['ENJ-000099',svcName('svc1'),'Osama']])}
+    ${col(tr('col_done'),[['ENJ-000091',svcName('svc4'),'Sunil'],['ENJ-000087',svcName('svc1'),'Osama'],['ENJ-000082',svcName('svc3'),'Fatima']])}
+  </div>
+`;}
+function adminTransactions(){
+  const rows=[
+    ['ENJ-2026-000123','Ahmed Ali','svc1','status_progress','b-progress','493.5','Osama'],
+    ['ENJ-2026-000119','Sara Corp LLC','svc2','status_pay','b-pay','2,150','Fatima'],
+    ['ENJ-2026-000108','Mohammed K.','svc3','status_review','b-review','310','Sunil'],
+    ['ENJ-2026-000091','Layla Trading','svc4','status_done','b-done','210','Osama'],
+  ];
+  return `
+  <div class="admin-head"><h1>${I('file')}${tr('admin_title_tx')}</h1></div>
+  <div class="panel"><table>
+    <tr><th>${tr('th_ref')}</th><th>${tr('th_cust')}</th><th>${tr('th_svc')}</th><th>${tr('th_status')}</th><th>${tr('th_amt')}</th><th>${tr('th_emp')}</th></tr>
+    ${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${svcName(r[2])}</td><td><span class="badge ${r[4]}">${I(statusIcon(r[3]),'icon-sm')}${tr(r[3])}</span></td><td>${r[5]} ${currency()}</td><td>${r[6]}</td></tr>`).join('')}
+  </table></div>
+`;}
+function adminServices(){ return `
+  <div class="admin-head"><h1>${I('grid')}${tr('admin_title_services')}</h1></div>
+  <div class="panel">
+    ${SERVICES.map(s=>`<div class="profile-row"><div class="l">${I(s.icon,'icon-sm')} ${svcName(s.id)}</div><span>${fmtMoney(s.feeGov+s.feeOff)} ${currency()}</span></div>`).join('')}
+  </div>
+`;}
+function adminReports(){ return `
+  <div class="admin-head"><h1>${I('trend')}${tr('admin_title_reports')}</h1></div>
+  <div class="two-col">
+    <div class="panel"><h3>${I('chart','icon-sm')}${lang==='ar'?'الإيراد الشهري':'Monthly Revenue'}</h3>
+      ${barRow('May',40)}${barRow('Jun',55)}${barRow('Jul',48)}${barRow('Aug',70)}${barRow('Sep',62)}
+    </div>
+    <div class="panel"><h3>${I('card','icon-sm')}${lang==='ar'?'طرق الدفع':'Payment Methods'}</h3>
+      ${barRow(lang==='ar'?'بطاقة':'Card',62)}${barRow(lang==='ar'?'رابط دفع':'Payment Link',24)}${barRow(lang==='ar'?'نقداً':'Cash',14)}
+    </div>
+  </div>
+`;}
+
+/* ---------------- A/B TEST PANEL ---------------- */
+function adminExperiments(){
+  const s = SERVICES[0];
+  return `
+  <div class="admin-head"><h1>${I('flask')}${tr('admin_title_exp')}</h1></div>
+  <div class="win-banner">${I('bolt','icon-lg')}<div><b>${tr('running_exp')}</b><br>${tr('sample_size')}</div></div>
+  <p style="font-size:12.5px;color:var(--muted);margin:-8px 0 18px;max-width:640px;">${tr('exp_hint')}</p>
+  <div class="ab-grid">
+    <div class="ab-card ${cardVariant==='A'?'':''}">
+      <div class="ab-head"><span class="ab-tag">A</span>${cardVariant==='A'?`<span class="badge b-progress">${I('check','icon-sm')}${tr('currently_active')}</span>`:''}</div>
+      <div style="font-size:12.5px;font-weight:700;margin-bottom:10px;">${tr('variant_a')}</div>
+      <div class="ab-preview">${svcCardPreview('A',s)}</div>
+      <div class="ab-metrics">
+        <div class="ab-metric"><div class="v">4,820</div><div class="l">${tr('impressions')}</div></div>
+        <div class="ab-metric"><div class="v">31.2%</div><div class="l">${tr('ctr')}</div></div>
+        <div class="ab-metric"><div class="v">9.4%</div><div class="l">${tr('conv')}</div></div>
+        <div class="ab-metric"><div class="v">6.1s</div><div class="l">${tr('time_on')}</div></div>
+      </div>
+      <div class="apply-row"><button class="${cardVariant==='A'?'on':''}" onclick="applyVariant('A')">${I('check','icon-sm')} ${tr('apply_live')}</button></div>
+    </div>
+    <div class="ab-card winner">
+      <div class="ab-head"><span class="ab-tag">B</span><span class="badge b-done">${I('trend','icon-sm')}${lang==='ar'?'الأفضل أداءً':'Top performer'}</span></div>
+      <div style="font-size:12.5px;font-weight:700;margin-bottom:10px;">${tr('variant_b')}</div>
+      <div class="ab-preview">${svcCardPreview('B',s)}</div>
+      <div class="ab-metrics">
+        <div class="ab-metric"><div class="v">4,790</div><div class="l">${tr('impressions')}</div></div>
+        <div class="ab-metric"><div class="v">44.6%<span class="delta up">${I('trend','icon-sm')}+43%</span></div><div class="l">${tr('ctr')}</div></div>
+        <div class="ab-metric"><div class="v">13.8%<span class="delta up">${I('trend','icon-sm')}+47%</span></div><div class="l">${tr('conv')}</div></div>
+        <div class="ab-metric"><div class="v">4.3s</div><div class="l">${tr('time_on')}</div></div>
+      </div>
+      <div class="apply-row"><button class="${cardVariant==='B'?'on':''}" onclick="applyVariant('B')">${I('check','icon-sm')} ${tr('apply_live')}</button></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>${I('flask','icon-sm')}${tr('confidence')}</h3>
+    <div class="confidence-bar"><div class="a" style="width:8%;"></div><div class="b" style="width:92%;"></div></div>
+    <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:6px;"><span>A: 8%</span><span>B: 92% (p &lt; 0.01)</span></div>
+    <p style="font-size:12.5px;margin-top:14px;">${tr('win_text')}</p>
+  </div>
+`;}
+function svcCardPreview(variant,s){
+  const name = svcName(s.id);
+  if(variant==='B'){
+    const total = s.feeGov+s.feeOff;
+    return `<div class="service-card" style="align-items:stretch;margin:0;">
+      <div class="ic" style="width:52px;height:52px;">${I(s.icon,'icon-lg')}</div>
+      <div class="body">
+        <div class="title">${name}<span class="tag-featured">${tr('featured_lbl')}</span></div>
+        <div class="sub"><span class="meta">${I('clock','icon-sm')} ${s.days} ${tr('days_lbl')}</span></div>
+        <div style="font-weight:800;font-size:14px;color:var(--emerald-dark);margin-top:6px;">${fmtMoney(total)} ${currency()}</div>
+      </div>
+      <div class="chev">${chev()}</div>
+    </div>`;
+  }
+  return `<div class="service-card" style="margin:0;">
+    <div class="ic">${I(s.icon)}</div>
+    <div class="body">
+      <div class="title">${name}<span class="tag-featured">${tr('featured_lbl')}</span></div>
+      <div class="sub"><span class="meta">${I('clock','icon-sm')} ${s.days} ${tr('days_lbl')}</span><span class="meta">${I('grid','icon-sm')} ${tr('cat_'+s.cat)}</span></div>
+    </div>
+    <div class="chev">${chev()}</div>
+  </div>`;
+}
+function applyVariant(v){ cardVariant=v; renderAdmin(); renderCustomer(); }
+
+renderStatic(); renderCustomer(); renderAdmin();
+</script>
+</body>
+</html>
